@@ -7,3 +7,8 @@ node_modules/
 dist/
 build/
 *.log
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
