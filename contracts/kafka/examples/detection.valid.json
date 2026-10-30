@@ -1,0 +1,23 @@
+{
+  "type": "PORT_SCAN",
+  "method": "RULE",
+  "rule_id": "port-scan-v1",
+  "severity": "HIGH",
+  "confidence": 0.94,
+  "src_ip": "192.0.2.10",
+  "dst_ip": "192.0.2.20",
+  "timestamp": "2026-10-20T18:30:10Z",
+  "window_start": "2026-10-20T18:30:00Z",
+  "duration_seconds": 10,
+  "features": [
+    {
+      "name": "unique_dest_ports",
+      "value": 200
+    },
+    {
+      "name": "unique_dest_ips",
+      "value": 20
+    },
+  ]
+  "explanation": "Source contacted 38 unique destination ports in 10 seconds."
+}

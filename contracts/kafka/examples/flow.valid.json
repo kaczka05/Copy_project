@@ -1,0 +1,12 @@
+{
+  "start_time": "2026-10-20T18:30:00Z",
+  "duration_ms": 120,
+  "src_ip": "192.0.2.10",
+  "src_port": 54321,
+  "dst_ip": "192.0.2.20",
+  "dst_port": 443,
+  "protocol": "TCP",
+  "packets": 15,
+  "bytes": 6200,
+  "tcp_flags": 24,
+}

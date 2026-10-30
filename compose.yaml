@@ -1,0 +1,7 @@
+name: netguard
+
+include:
+  - path: infrastructure/kafka/compose.yaml
+
+# Future application services can be added below. Compose merges services
+# from the included Kafka file into the same project and network.

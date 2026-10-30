@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://netguard.local/schemas/kafka/flow-event.v1.schema.json",
+  "title": "NetGuard FlowEvent v1",
+  "description": "Normalized, unidirectional laboratory network flow. Scenario label is evaluation-only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "trace_id",
+    "flow_id",
+    "start_time",
+    "duration_ms",
+    "src_ip",
+    "dst_ip",
+    "src_port",
+    "dst_port",
+    "protocol",
+    "packets",
+    "bytes",
+    "source_type"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "trace_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "flow_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "ingest_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_ms": {
+      "type": "number",
+      "minimum": 0
+    },
+    "src_ip": {
+      "type": "string",
+      "oneOf": [
+        {
+          "format": "ipv4"
+        },
+        {
+          "format": "ipv6"
+        }
+      ]
+    },
+    "dst_ip": {
+      "type": "string",
+      "oneOf": [
+        {
+          "format": "ipv4"
+        },
+        {
+          "format": "ipv6"
+        }
+      ]
+    },
+    "src_port": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "dst_port": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "protocol": {
+      "type": "string",
+      "enum": [
+        "TCP",
+        "UDP",
+        "ICMP",
+        "ICMPV6",
+        "OTHER"
+      ]
+    },
+    "packets": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "tcp_flags": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 255,
+      "description": "TCP flags bit mask, null for non-TCP or unavailable."
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "PCAP",
+        "FLOW_DATASET",
+        "SIMULATOR"
+      ]
+    },
+    "dataset_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 128
+    },
+    "simulation_run_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 128
+    },
+    "scenario_label": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "NORMAL",
+        "PORT_SCAN",
+        "DOS_LIKE",
+        "BRUTE_FORCE_LIKE",
+        "ABNORMAL_CONNECTION_PATTERN",
+        null
+      ],
+      "description": "Ground truth for evaluations only. Detectors MUST NOT use this value as input."
+    },
+    "features": {
+      "type": "object",
+      "description": "Optional per-flow-derived features. Time-window aggregates are calculated downstream.",
+      "additionalProperties": false,
+      "properties": {
+        "flow_packets_per_sec": {
+          "type": "number",
+          "minimum": 0
+        },
+        "flow_bytes_per_sec": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

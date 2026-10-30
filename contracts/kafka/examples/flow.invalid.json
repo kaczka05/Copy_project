@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "event_id": "event-001",
+  "trace_id": "trace-001",
+  "flow_id": "flow-001",
+  "ingest_time": "2026-10-20T18:30:00.130Z",
+  "start_time": "2026-10-20T18:30:00Z",
+  "duration_ms": 120,
+  "src_ip": "192.0.2.10",
+  "src_port": 70000,
+  "dst_ip": "192.0.2.20",
+  "dst_port": 443,
+  "protocol": "TCP",
+  "packets": 15,
+  "bytes": 6200,
+  "tcp_flags": 24,
+  "source_type": "SIMULATOR",
+  "dataset_id": null,
+  "simulation_run_id": "run-001",
+  "scenario_label": "PORT_SCAN"
+}
