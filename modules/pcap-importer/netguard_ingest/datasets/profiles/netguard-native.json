@@ -1,0 +1,25 @@
+{
+  "profile": "netguard-native",
+  "profile_version": 1,
+  "description": "NetGuard-native prepared flow dataset. Column/key names equal the common NetGuard flow model. CSV needs a header row; JSON-lines holds one JSON object per line. Empty CSV cells and JSON null mean 'missing/unavailable' and are never treated as zero.",
+  "formats": ["csv", "jsonl"],
+  "null_tokens": [""],
+  "fields": {
+    "start_time": {"source": "start_time", "timestamp_format": "rfc3339"},
+    "duration_ms": {"source": "duration_ms", "duration_unit": "ms"},
+    "src_ip": {"source": "src_ip"},
+    "src_port": {"source": "src_port"},
+    "dst_ip": {"source": "dst_ip"},
+    "dst_port": {"source": "dst_port"},
+    "protocol": {"source": "protocol"},
+    "packets": {"source": "packets"},
+    "bytes": {"source": "bytes"},
+    "tcp_flags": {"source": "tcp_flags", "tcp_flags_format": "int", "optional_column": true},
+    "scenario_label": {"source": "scenario_label", "optional_column": true},
+    "source_flow_id": {"source": "flow_id", "optional_column": true},
+    "original_source_type": {"source": "source_type", "optional_column": true},
+    "source_dataset_id": {"source": "dataset_id", "optional_column": true},
+    "simulation_run_id": {"source": "simulation_run_id", "optional_column": true}
+  },
+  "ignored_columns": ["schema_version", "event_id", "trace_id", "ingest_time", "features"]
+}

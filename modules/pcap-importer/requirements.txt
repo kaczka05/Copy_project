@@ -1,0 +1,3 @@
+# Runtime dependencies of the NetGuard ingestion subsystem (modules/pcap-importer)
+dpkt==1.9.8
+jsonschema[format]==4.26.0

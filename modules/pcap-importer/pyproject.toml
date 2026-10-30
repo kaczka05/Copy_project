@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "netguard-ingest"
+version = "1.0.0"
+description = "NetGuard PCAP/flow ingestion, flow extraction, validation and normalisation"
+requires-python = ">=3.10"
+dependencies = [
+    "dpkt==1.9.8",
+    "jsonschema[format]>=4.23,<5",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+netguard-ingest = "netguard_ingest.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["netguard_ingest*"]
+
+[tool.setuptools.package-data]
+netguard_ingest = ["datasets/profiles/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

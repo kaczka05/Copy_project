@@ -1,0 +1,14 @@
+[
+  {
+    "content": "Write /app/modules/pcap-importer/IMPLEMENTATION_REPORT.md at module root",
+    "status": "completed"
+  },
+  {
+    "content": "Update README.md link to point to module-root location",
+    "status": "completed"
+  },
+  {
+    "content": "Verify tests still pass and finish",
+    "status": "in_progress"
+  }
+]
