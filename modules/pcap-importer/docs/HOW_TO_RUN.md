@@ -5,7 +5,7 @@ No Docker, Kafka, database or network access is needed to ingest files.
 
 ## 1. Requirements
 
-* Python **3.10+** (developed and tested with 3.11.18)
+* Python **3.10+** (tested with 3.11.18 and 3.12.10)
 * `pip`
 * Runtime libraries: `dpkt==1.9.8`, `jsonschema[format]` (4.26.0 tested) — the
   `[format]` extra is mandatory: it enables the `date-time`/`ipv4`/`ipv6` checks of
@@ -130,7 +130,7 @@ Put global options before the sub-command:
 
 ```bash
 cd modules/pcap-importer
-python -m pytest            # 177 tests, about 3 s
+python -m pytest            # 178 tests, about 3 s
 python -m pytest -v tests/test_flow_aggregation.py
 ```
 
@@ -153,7 +153,7 @@ print(result.status, result.output_dir, result.report["flows"])
 
 ## 10. Handing flows to Kafka (other team members)
 
-As agreed, this subsystem writes JSON-lines only. Each line of `flows.jsonl` is
+This subsystem writes JSON-lines only. Each line of `flows.jsonl` is
 a complete, schema-validated FlowEvent v1 message. The Flow Processor or DevOps
 owner can publish the lines to `flows.normalized`. Use key `src_ip` as proposed,
 and keep `event_id` / `flow_id` unchanged so consumers can deduplicate.

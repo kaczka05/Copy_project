@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import dataclasses
+import ipaddress
 from datetime import datetime, timezone
 
 import pytest
 from conftest import genuine
 
+from netguard_ingest.capture.decoder import PacketDecoder
 from netguard_ingest.errors import ErrorCode, ValidationIssue
 from netguard_ingest.model import NormalizedFlow, Protocol, SourceType
 from netguard_ingest.normalize import (
@@ -29,6 +31,26 @@ def code_of(fn, *args, **kwargs):
 ])
 def test_ip_canonical_form(raw, expected):
     assert normalize_ip(raw, field="src_ip") == expected
+
+
+def test_ipv4_mapped_form_independent_of_interpreter(monkeypatch):
+    """Some CPython releases render IPv4-mapped IPv6 as ``::ffff:c000:201``.
+    The canonical form must not depend on that."""
+    original = ipaddress.IPv6Address.__str__
+
+    def hex_rendering(self):
+        if self.ipv4_mapped is not None:
+            low = int(self) & 0xFFFFFFFF
+            return f"::ffff:{low >> 16:x}:{low & 0xFFFF:x}"
+        return original(self)
+
+    monkeypatch.setattr(ipaddress.IPv6Address, "__str__", hex_rendering)
+    assert ipaddress.ip_address("::ffff:192.0.2.1").compressed == "::ffff:c000:201"   # patch is effective
+    assert normalize_ip("::FFFF:192.0.2.1", field="src_ip") == "::ffff:192.0.2.1"
+    assert normalize_ip("::ffff:c000:201", field="src_ip") == "::ffff:192.0.2.1"
+    raw = ipaddress.ip_address("::ffff:192.0.2.1").packed
+    assert PacketDecoder()._addr(raw) == "::ffff:192.0.2.1"
+    assert normalize_ip("2001:db8::1", field="src_ip") == "2001:db8::1"
 
 
 @pytest.mark.parametrize("raw", ["256.1.1.1", "192.168.001.1", "1.2.3", "fe80::1%eth0", "gggg::1", "", 3232235777])

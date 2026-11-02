@@ -206,9 +206,26 @@ def duration_ms_between(start: datetime, end: datetime, *, field: str = "end_tim
 
 
 # ------------------------------------------------------------------------- IP
+def canonical_ip(address: ipaddress.IPv4Address | ipaddress.IPv6Address) -> str:
+    """Canonical text of an address: IPv4 dotted quad; IPv6 RFC 5952
+    compressed lower-case, with IPv4-mapped addresses written as
+    ``::ffff:a.b.c.d`` (RFC 5952 section 5).
+
+    The mapped form is produced explicitly because ``ipaddress`` renders it
+    differently across CPython patch releases (``::ffff:c000:201`` on some,
+    ``::ffff:192.0.2.1`` on others), which would make flow keys and output
+    depend on the interpreter version.
+    """
+    if address.version == 6:
+        mapped = address.ipv4_mapped
+        if mapped is not None:
+            return f"::ffff:{mapped}"
+    return address.compressed
+
+
 def normalize_ip(value: Any, *, field: str) -> str:
-    """Validate IPv4/IPv6 text and return its canonical form (IPv4 dotted
-    quad; IPv6 RFC 5952 compressed lower-case)."""
+    """Validate IPv4/IPv6 text and return its canonical form (see
+    :func:`canonical_ip`)."""
     if value is None:
         raise ValidationIssue(ErrorCode.MISSING_REQUIRED_FIELD, f"{field} is missing", field)
     if not isinstance(value, str):
@@ -217,10 +234,11 @@ def normalize_ip(value: Any, *, field: str) -> str:
     if "%" in text:
         raise ValidationIssue(ErrorCode.INVALID_IP_ADDRESS, f"{field} contains an IPv6 zone index", field, value)
     try:
-        return ipaddress.ip_address(text).compressed
+        address = ipaddress.ip_address(text)
     except ValueError:
         raise ValidationIssue(ErrorCode.INVALID_IP_ADDRESS, f"{field} {value!r} is not a valid IPv4/IPv6 address",
                               field, value) from None
+    return canonical_ip(address)
 
 
 def ip_version(address: str) -> int:

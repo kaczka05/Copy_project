@@ -14,6 +14,7 @@ import dpkt
 
 from ..errors import ErrorCode, PacketRejected
 from ..model import IP_PROTO_TO_PROTOCOL, Protocol
+from ..normalize import canonical_ip
 
 # LINKTYPE_* values (https://www.tcpdump.org/linktypes.html) supported here.
 LINKTYPE_NULL = 0
@@ -129,7 +130,7 @@ class PacketDecoder:
     def _addr(self, raw: bytes) -> str:
         text = self._addr_cache.get(raw)
         if text is None:
-            text = ipaddress.ip_address(raw).compressed
+            text = canonical_ip(ipaddress.ip_address(raw))
             if len(self._addr_cache) < 65_536:
                 self._addr_cache[raw] = text
         return text

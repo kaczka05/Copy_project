@@ -29,7 +29,7 @@ prepared PCAP / flow files ──► [PCAP/Flow Importer] ──► FlowEvent v1
 **Out of scope, not implemented:** traffic simulation or any synthetic data,
 time-window features (pps, bps, connections per window, unique ports or IPs, new-connection
 rate), detection, alerting, persistence, REST API, dashboard, Kafka publishing
-(the user chose JSON-lines output only), and live capture.
+(output is JSON-lines files only), and live capture.
 
 ## 2. Supported capture formats
 
@@ -104,8 +104,8 @@ reported as unmapped (in the report and as a warning) and is not imported.
 
 Unknown options, unmapped required targets and invalid formats are rejected
 when the profile loads (`INVALID_MAPPING_PROFILE`). The only built-in profile is
-`netguard-native`. Profiles for CIC-IDS2017, UNSW-NB15 and similar datasets were
-not requested and are not included.
+`netguard-native`. Profiles for CIC-IDS2017, UNSW-NB15 and similar datasets are
+not included.
 
 ## 4. Packet parsing process
 
@@ -206,7 +206,7 @@ extension headers, transport header and payload. For each packet the count is
 | Field | Rule |
 |---|---|
 | Timestamps | Stored as RFC 3339 UTC with fixed microsecond precision (`2010-01-07T19:38:34.341715Z`). Capture timestamps are integer ns since the epoch (UTC by format definition), truncated to µs. Datasets: an explicit offset is converted to UTC; a **naive timestamp is rejected** unless `--assume-timezone` or the profile's `timezone` names a zone; epoch formats only when declared; times before 1970 are rejected; sub-µs digits are truncated |
-| IP addresses | IPv4 dotted quad, IPv6 RFC 5952 compressed lower-case (Python `ipaddress`). Invalid text, leading-zero octets, zone indexes, and mixed IPv4/IPv6 within a flow are rejected |
+| IP addresses | IPv4 dotted quad, IPv6 RFC 5952 compressed lower-case (Python `ipaddress`). IPv4-mapped IPv6 is always written `::ffff:a.b.c.d` (RFC 5952 §5), independent of the Python version. Invalid text, leading-zero octets, zone indexes, and mixed IPv4/IPv6 within a flow are rejected |
 | Ports | Integers 0–65535 (JSON integer or digit string). `null` = unavailable or not applicable. Floats such as `80.0`, booleans and out-of-range values are rejected. Must be null for ICMP/ICMPv6/OTHER |
 | Protocol | `TCP`, `UDP`, `ICMP`, `ICMPV6` (names case-insensitive, or IANA numbers 6/17/1/58). Other valid numbers: `UNSUPPORTED_PROTOCOL`, or `OTHER` when enabled. Unknown text: `INVALID_PROTOCOL` |
 | Counters | Non-negative integers with no lossy coercion (`"15"` is accepted; `15.0`, `"1.5"` and `true` are rejected). `packets ≥ 1`, `bytes ≥ packets × min IP header` |
@@ -296,7 +296,7 @@ Identifiers:
   message for topic `flows.normalized`. It is validated against the shared schema
   in `contracts/kafka/`, and also, in the tests, with the repository's existing
   helper `examples/kafka/common.validate`. Publishing to Kafka is outside this
-  task, as the user chose JSON-lines only. Persistence belongs to the backend
+  module, which writes JSON-lines only. Persistence belongs to the backend
   tier, so no database is used.
 * **Traceability**: `trace_id` and `flow_id` lead to `provenance.jsonl`, and from
   there to the packet index and file offset (PCAP) or the record and line number
@@ -325,7 +325,7 @@ Identifiers:
   The outer header is used, or the packet is rejected.
 * TCP connection semantics (FIN/RST, port reuse inside the idle timeout) do not
   split flows.
-* Kafka publishing is not part of this module (JSON-lines only, as agreed).
+* Kafka publishing is not part of this module (JSON-lines output only).
 * Only the `netguard-native` profile is built in. Other public dataset schemas
   need a custom mapping profile. Bidirectional dataset records (for example
   CICFlowMeter) cannot be mapped to unidirectional flows by a profile alone.
@@ -333,6 +333,6 @@ Identifiers:
   SLL, SLL2, NULL/LOOP, raw IP files, VLAN, MPLS, big-endian files,
   nanosecond-resolution pcap and pcapng Packet/Simple Packet blocks. They are
   implemented following the format specifications, but none of the downloaded
-  captures contains them (see TEST_REPORT.md).
+  captures contains them (see IMPLEMENTATION_REPORT.md, section 9).
 * NFR01 (5,000 flows/s for 5 minutes) has not been load-tested, because no large
   genuine capture was available.

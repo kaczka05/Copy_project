@@ -32,9 +32,7 @@ python -m pytest
 |---|---|
 | [docs/HOW_TO_RUN.md](docs/HOW_TO_RUN.md) | **How to run**: installation, every command, configuration, outputs, tests |
 | [docs/DESIGN.md](docs/DESIGN.md) | Components, formats, parsing, flow policy, timeouts, byte counting, normalisation, validation, errors, output schema, interfaces, limitations |
-| [docs/MODEL_CHANGES.md](docs/MODEL_CHANGES.md) | Catalogue of every change made to the sample flow model from *Test Data and Demonstration Environment* |
-| [docs/TEST_REPORT.md](docs/TEST_REPORT.md) | Test plan, executed tests and results, untested cases |
-| [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md) | Final implementation report (files, libraries, policies, deviations, limitations) |
+| [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md) | Implementation report: files, libraries, tests and results, benchmarks, deviations, limitations |
 | [tests/data/pcap/SOURCES.md](tests/data/pcap/SOURCES.md) | Genuine public captures used for testing (URLs, SHA-256) |
 
 ## Layout
